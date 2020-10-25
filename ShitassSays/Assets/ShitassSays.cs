@@ -84,8 +84,23 @@ public class ShitassSays : MonoBehaviour {
           StopAllCoroutines();
           StartCoroutine(ColorChanger(i));
           StartCoroutine(KeyAnimation(i));
-          if (moduleSolved)
+          if (moduleSolved) {
+            switch (i) {
+              case 0:
+              Audio.PlaySoundAtTransform("speedbridge", transform);
+              break;
+              case 1:
+              Audio.PlaySoundAtTransform("speedrun", transform);
+              break;
+              case 2:
+              Audio.PlaySoundAtTransform("shitass", transform);
+              break;
+              case 3:
+              Audio.PlaySoundAtTransform("badyourbad", transform);
+              break;
+            }
             return;
+          }
           if (StageTwoActive) {
             if (i == FinalSequence[StageTwoPresses]) {
               StageTwoPresses++;
