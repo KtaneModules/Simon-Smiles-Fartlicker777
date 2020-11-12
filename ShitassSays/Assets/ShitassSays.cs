@@ -88,7 +88,6 @@ public class ShitassSays : MonoBehaviour {
       for (int i = 0; i < 4; i++) {
         if (Button == Buttons[i]) {
           StartCoroutine(KeyAnimation(i));
-<<<<<<< Updated upstream
           if (moduleSolved) {
             switch (i) {
               case 0:
@@ -104,10 +103,8 @@ public class ShitassSays : MonoBehaviour {
               Audio.PlaySoundAtTransform("badyourbad", transform);
               break;
             }
-=======
           StopCoroutine(Flash());
           if (moduleSolved)
->>>>>>> Stashed changes
             return;
           }
           if (StageTwoActive) {
