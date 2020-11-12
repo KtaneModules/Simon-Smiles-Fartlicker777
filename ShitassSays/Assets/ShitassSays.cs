@@ -41,6 +41,10 @@ public class ShitassSays : MonoBehaviour {
     bool Active;
     bool StageTwoActive;
 
+    #pragma warning disable 0649
+    bool TwitchPlaysActive;
+    #pragma warning restore 0649
+
     Vector3 FinalShitass = new Vector3 (0, .01f, 0);
 
     static int moduleIdCounter = 1;
@@ -70,6 +74,8 @@ public class ShitassSays : MonoBehaviour {
           Shitasses[i].gameObject.SetActive(false);
       }
       SolvedShitass.gameObject.SetActive(false);
+      if (TwitchPlaysActive)
+        Timer = 17.5f;
       SequenceChooser();
     }
 
@@ -81,9 +87,8 @@ public class ShitassSays : MonoBehaviour {
     void ButtonPress (KMSelectable Button) {
       for (int i = 0; i < 4; i++) {
         if (Button == Buttons[i]) {
-          StopAllCoroutines();
-          StartCoroutine(ColorChanger(i));
           StartCoroutine(KeyAnimation(i));
+<<<<<<< Updated upstream
           if (moduleSolved) {
             switch (i) {
               case 0:
@@ -99,6 +104,10 @@ public class ShitassSays : MonoBehaviour {
               Audio.PlaySoundAtTransform("badyourbad", transform);
               break;
             }
+=======
+          StopCoroutine(Flash());
+          if (moduleSolved)
+>>>>>>> Stashed changes
             return;
           }
           if (StageTwoActive) {
@@ -128,6 +137,8 @@ public class ShitassSays : MonoBehaviour {
               Temp = ColorChooser(OnOrOffOfShitasses[LastPressed], LastPressed);
               Audio.PlaySoundAtTransform(SoundFiles[Sounds[Iteration]], transform);
               Timer = 10f;
+              if (TwitchPlaysActive)
+                Timer = 17.5f;
             }
             else
               Strikes();
@@ -139,6 +150,8 @@ public class ShitassSays : MonoBehaviour {
             Temp = ColorChooser(OnOrOffOfShitasses[LastPressed], LastPressed);
             Audio.PlaySoundAtTransform(SoundFiles[Sounds[Iteration]], transform);
             Timer = 10f;
+            if (TwitchPlaysActive)
+              Timer = 17.5f;
           }
         }
       }
@@ -279,6 +292,7 @@ public class ShitassSays : MonoBehaviour {
         SolvedShitass.transform.localPosition += FinalShitass;
         yield return new WaitForSeconds(.01f);
       }
+      SolvedShitass.gameObject.SetActive(false);
     }
 
     IEnumerator ColorChanger (int i) {
@@ -300,6 +314,7 @@ public class ShitassSays : MonoBehaviour {
 
     IEnumerator KeyAnimation (int HiKavin) {
         AnimatingFlag[HiKavin] = true;
+        StartCoroutine(ColorChanger(HiKavin));
         Buttons[HiKavin].AddInteractionPunch(0.125f);
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, transform);
         for (int i = 0; i < 5; i++) {
@@ -319,6 +334,8 @@ public class ShitassSays : MonoBehaviour {
       Presses = "";
       Iteration = 0;
       Timer = 10f;
+      if (TwitchPlaysActive)
+        Timer = 17.5f;
       Active = false;
       SequenceChooser();
     }
