@@ -30,7 +30,7 @@ public class ShitassSays : MonoBehaviour {
 
     float Timer = 10f;
 
-    string[] SoundFiles = {"speedbridge", "speedrun", "shitass"};
+    string[] SoundFiles = {"Low", "Normal", "High"};
     string LogForColors = "RBGY";
     string LogForColorsFinal;
     string Presses;
@@ -40,6 +40,7 @@ public class ShitassSays : MonoBehaviour {
     bool[] OnOrOffOfShitasses = new bool[4];
     bool Active;
     bool StageTwoActive;
+    bool Pressed;
 
     #pragma warning disable 0649
     bool TwitchPlaysActive;
@@ -91,22 +92,22 @@ public class ShitassSays : MonoBehaviour {
           if (moduleSolved) {
             switch (i) {
               case 0:
-              Audio.PlaySoundAtTransform("speedbridge", transform);
+              Audio.PlaySoundAtTransform("Low", transform);
               break;
               case 1:
-              Audio.PlaySoundAtTransform("speedrun", transform);
+              Audio.PlaySoundAtTransform("Normal", transform);
               break;
               case 2:
-              Audio.PlaySoundAtTransform("shitass", transform);
+              Audio.PlaySoundAtTransform("High", transform);
               break;
               case 3:
-              Audio.PlaySoundAtTransform("badyourbad", transform);
+              Audio.PlaySoundAtTransform("Wrong", transform);
               break;
             }
-          StopCoroutine(Flash());
           if (moduleSolved)
             return;
           }
+          Pressed = false;
           if (StageTwoActive) {
             if (i == FinalSequence[StageTwoPresses]) {
               StageTwoPresses++;
@@ -115,8 +116,9 @@ public class ShitassSays : MonoBehaviour {
             }
             else {
               GetComponent<KMBombModule>().HandleStrike();
+              Pressed = true;
               StartCoroutine(Flash());
-              Audio.PlaySoundAtTransform("badyourbad", transform);
+              Audio.PlaySoundAtTransform("Wrong", transform);
             }
           }
           else if (Active) {
@@ -156,128 +158,128 @@ public class ShitassSays : MonoBehaviour {
 
     int ColorChooser (bool Status, int LastPressedForThisIntThing) {
       if (Status) {
-        Debug.LogFormat("[Shitass Says #{0}] The face you last pressed had a face.", moduleId);
-        switch (Sounds[Iteration]) { //speedbridge
+        Debug.LogFormat("[Simon Smiles #{0}] The face you last pressed had a face.", moduleId);
+        switch (Sounds[Iteration]) { //Low
           case 0:
-          Debug.LogFormat("[Shitass Says #{0}] The clip played was \"speedbridge.\"", moduleId);
+          Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"Low.\"", moduleId);
           switch (LastPressedForThisIntThing) {
             case 0: //r
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was red.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was red.", moduleId);
             goto Yellow;
             case 1: //b
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was blue.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was blue.", moduleId);
             goto Red;
             case 2: //g
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was green.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was green.", moduleId);
             goto Blue;
             case 3: //y
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was yellow.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was yellow.", moduleId);
             goto Green;
           }
           break;
           case 1:
-          Debug.LogFormat("[Shitass Says #{0}] The clip played was \"speedrun.\"", moduleId);
+          Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"Normal.\"", moduleId);
           switch (LastPressedForThisIntThing) {
             case 0:
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was red.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was red.", moduleId);
             goto Green;
             case 1:
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was blue.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was blue.", moduleId);
             goto Blue;
             case 2:
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was green.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was green.", moduleId);
             goto Yellow;
             case 3:
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was yellow.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was yellow.", moduleId);
             goto Red;
           }
           break;
           case 2:
-          Debug.LogFormat("[Shitass Says #{0}] The clip played was \"shitass.\"", moduleId);
+          Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"High.\"", moduleId);
           switch (LastPressedForThisIntThing) {
             case 0:
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was red.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was red.", moduleId);
             goto Blue;
             case 1:
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was blue.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was blue.", moduleId);
             goto Red;
             case 2:
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was green.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was green.", moduleId);
             goto Green;
             case 3:
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was yellow.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was yellow.", moduleId);
             goto Yellow;
           }
           break;
         }
       }
       else {
-        Debug.LogFormat("[Shitass Says #{0}] The face you last pressed had a face.", moduleId);
-        switch (Sounds[Iteration]) { //speedbridge
+        Debug.LogFormat("[Simon Smiles #{0}] The face you last pressed had a face.", moduleId);
+        switch (Sounds[Iteration]) { //Low
           case 0:
-          Debug.LogFormat("[Shitass Says #{0}] The clip played was \"speedbridge.\"", moduleId);
+          Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"Low.\"", moduleId);
           switch (LastPressedForThisIntThing) {
             case 0: //r
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was red.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was red.", moduleId);
             goto Green;
             case 1: //b
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was blue.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was blue.", moduleId);
             goto Yellow;
             case 2: //g
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was green.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was green.", moduleId);
             goto Blue;
             case 3: //y
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was yellow.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was yellow.", moduleId);
             goto Red;
           }
           break;
           case 1:
-          Debug.LogFormat("[Shitass Says #{0}] The clip played was \"speedrun.\"", moduleId);
+          Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"Normal.\"", moduleId);
           switch (LastPressedForThisIntThing) {
             case 0:
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was red.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was red.", moduleId);
             goto Yellow;
             case 1:
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was blue.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was blue.", moduleId);
             goto Red;
             case 2:
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was green.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was green.", moduleId);
             goto Blue;
             case 3:
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was yellow.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was yellow.", moduleId);
             goto Green;
           }
           break;
           case 2:
-          Debug.LogFormat("[Shitass Says #{0}] The clip played was \"shitass.\"", moduleId);
+          Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"High.\"", moduleId);
           switch (LastPressedForThisIntThing) {
             case 0:
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was red.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was red.", moduleId);
             goto Yellow;
             case 1:
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was blue.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was blue.", moduleId);
             goto Green;
             case 2:
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was green.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was green.", moduleId);
             goto Red;
             case 3:
-            Debug.LogFormat("[Shitass Says #{0}] Last pressed was yellow.", moduleId);
+            Debug.LogFormat("[Simon Smiles #{0}] Last pressed was yellow.", moduleId);
             goto Blue;
           }
           break;
         }
       }
       Red:
-      Debug.LogFormat("[Shitass Says #{0}] You should press red.", moduleId);
+      Debug.LogFormat("[Simon Smiles #{0}] You should press red.", moduleId);
       return 0;
       Blue:
-      Debug.LogFormat("[Shitass Says #{0}] You should press blue.", moduleId);
+      Debug.LogFormat("[Simon Smiles #{0}] You should press blue.", moduleId);
       return 1;
       Green:
-      Debug.LogFormat("[Shitass Says #{0}] You should press green.", moduleId);
+      Debug.LogFormat("[Simon Smiles #{0}] You should press green.", moduleId);
       return 2;
       Yellow:
-      Debug.LogFormat("[Shitass Says #{0}] You should press yellow.", moduleId);
+      Debug.LogFormat("[Simon Smiles #{0}] You should press yellow.", moduleId);
       return 3;
     }
 
@@ -327,8 +329,8 @@ public class ShitassSays : MonoBehaviour {
 
     void Strikes () {
       GetComponent<KMBombModule>().HandleStrike();
-      Audio.PlaySoundAtTransform("badyourbad", transform);
-      Presses = "";
+      Audio.PlaySoundAtTransform("Wrong", transform);
+      Presses = String.Empty;
       Iteration = 0;
       Timer = 10f;
       if (TwitchPlaysActive)
@@ -338,12 +340,16 @@ public class ShitassSays : MonoBehaviour {
     }
 
     IEnumerator Flash () {
-      while (true) {
+      while (Pressed) {
         for (int i = 0; i < 10; i++) {
           StartCoroutine(ColorChanger(int.Parse(Presses[i].ToString())));
           StartCoroutine(KeyAnimation(int.Parse(Presses[i].ToString())));
+          if (!Pressed)
+            yield break;
           yield return new WaitForSeconds(1f);
         }
+        if (!Pressed)
+          yield break;
         yield return new WaitForSeconds(2.5f);
       }
     }
@@ -357,13 +363,10 @@ public class ShitassSays : MonoBehaviour {
     }
 
     void FinalAnswerGenerator () {
-      Debug.LogFormat("[Shitass Says #{0}] Presses so far are {1}.", moduleId, Presses);
-      for (int i = 0; i < 10; i++) {
+      Debug.LogFormat("[Simon Smiles #{0}] Presses so far are {1}.", moduleId, Presses);
+      for (int i = 0; i < 10; i++)
         Total += (int)Math.Pow(4, 9 - i) * int.Parse(Presses[i].ToString());
-        Debug.Log(Math.Pow(4, 9 - i));
-        Debug.Log(int.Parse(Presses[i].ToString()));
-      }
-      Debug.LogFormat("[Shitass Says #{0}] In base 10 it is {1}.", moduleId, Total);
+      Debug.LogFormat("[Simon Smiles #{0}] In base 10 it is {1}.", moduleId, Total);
       TotalAsString = Total.ToString();
       while (TotalAsString.Length != 7)
         TotalAsString += "0";
@@ -436,7 +439,7 @@ public class ShitassSays : MonoBehaviour {
         }
         LogForColorsFinal += LogForColors[FinalSequence[i]].ToString();
       }
-      Debug.LogFormat("[Shitass Says #{0}] Press {1}.", moduleId, LogForColorsFinal);
+      Debug.LogFormat("[Simon Smiles #{0}] Press {1}.", moduleId, LogForColorsFinal);
     }
 
     #pragma warning disable 414
