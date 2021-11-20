@@ -97,6 +97,9 @@ public class ShitassSays : MonoBehaviour {
       if (StrikeFlash) {
          return;
       }
+      if (!StrikeFlash) {
+         StopAllCoroutines();
+      }
       for (int i = 0; i < 4; i++) {
          if (Button == Buttons[i]) {
             StartCoroutine(KeyAnimation(i));
@@ -123,11 +126,13 @@ public class ShitassSays : MonoBehaviour {
             if (StageTwoActive) {
                if (i == FinalSequence[StageTwoPresses]) {
                   StageTwoPresses++;
+                  Debug.LogFormat("[Simon Smiles #{0}] You pressed {1}. Next up is {2}.", moduleId, new string[] { "R", "B", "G", "Y"}[i], new string[] { "R", "B", "G", "Y" }[FinalSequence[StageTwoPresses]]);
                   if (StageTwoPresses == TotalAsString.Length) {
                      StartCoroutine(Solved());
                   }
                }
                else {
+                  Debug.LogFormat("[Simon Smiles #{0}] You pressed {1}. Next up is {2}.", moduleId, new string[] { "R", "B", "G", "Y" }[i], new string[] { "R", "B", "G", "Y" }[FinalSequence[StageTwoPresses]]);
                   GetComponent<KMBombModule>().HandleStrike();
                   Pressed = true;
                   StartCoroutine(Flash());
@@ -367,7 +372,7 @@ public class ShitassSays : MonoBehaviour {
 
    IEnumerator Flash () {
       StrikeFlash = true;
-      for (int j = 0; j < 2; j++) {
+      while (true) {
          for (int i = 0; i < 10; i++) {
             StartCoroutine(ColorChanger(int.Parse(Presses[i].ToString())));
             StartCoroutine(KeyAnimation(int.Parse(Presses[i].ToString())));
@@ -379,9 +384,10 @@ public class ShitassSays : MonoBehaviour {
          if (!Pressed) {
             yield break;
          }
+         StrikeFlash = false;
          yield return new WaitForSeconds(2.5f);
+         StrikeFlash = true;
       }
-      StrikeFlash = false;
    }
 
    void Update () {
@@ -515,6 +521,9 @@ public class ShitassSays : MonoBehaviour {
             yield return "sendtochaterror I don't understand!";
             yield break;
          }
+      }
+      while (StrikeFlash) {
+         yield return null;
       }
       for (int i = 0; i < Parameters.Length; i++) {
          switch (Parameters[i]) {
