@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using KModkit;
+using System.Collections.Generic;
 
 public class ShitassSays : MonoBehaviour {
 
@@ -42,6 +43,9 @@ public class ShitassSays : MonoBehaviour {
    bool Playing;
    //bool Played;
    bool StrikeFlash;
+   bool Transition;
+
+   private SimonSmilesSettings Settings = new SimonSmilesSettings();
 
 #pragma warning disable 0649
    bool TwitchPlaysActive;
@@ -54,6 +58,11 @@ public class ShitassSays : MonoBehaviour {
    private bool moduleSolved;
 
    void Awake () {
+      ModConfig<SimonSmilesSettings> modConfig = new ModConfig<SimonSmilesSettings>("SimonSmilesSettings");
+      //Read from the settings file, or create one if one doesn't exist
+      Settings = modConfig.Settings;
+      //Update the settings file in case there was an error during read
+      modConfig.Settings = Settings;
       moduleId = moduleIdCounter++;
       foreach (KMSelectable Button in Buttons) {
          Button.OnInteract += delegate () { ButtonPress(Button); return false; };
@@ -62,6 +71,9 @@ public class ShitassSays : MonoBehaviour {
    }
 
    void Start () {
+      if (Settings.shitassMode) {
+         SoundFiles = new string[]{ "speedbridge", "speedrun", "shitass" };
+      }
       do {
          for (int i = 0; i < 4; i++) {
             if (UnityEngine.Random.Range(0, 2) == 1) {
@@ -94,11 +106,12 @@ public class ShitassSays : MonoBehaviour {
    }
 
    void ButtonPress (KMSelectable Button) {
-      if (StrikeFlash) {
+      if (StrikeFlash || Transition) {
          return;
       }
-      if (!StrikeFlash) {
-         StopAllCoroutines();
+      StopAllCoroutines();
+      for (int i = 0; i < 4; i++) {
+         ButtonsButObjects[i].GetComponent<MeshRenderer>().material = LightsAndNotLights[i];
       }
       for (int i = 0; i < 4; i++) {
          if (Button == Buttons[i]) {
@@ -106,16 +119,16 @@ public class ShitassSays : MonoBehaviour {
             if (moduleSolved) {
                switch (i) {
                   case 0:
-                     Audio.PlaySoundAtTransform("Low", transform);
+                     Audio.PlaySoundAtTransform(SoundFiles[0], transform);
                      break;
                   case 1:
-                     Audio.PlaySoundAtTransform("Normal", transform);
+                     Audio.PlaySoundAtTransform(SoundFiles[1], transform);
                      break;
                   case 2:
-                     Audio.PlaySoundAtTransform("High", transform);
+                     Audio.PlaySoundAtTransform(SoundFiles[2], transform);
                      break;
                   case 3:
-                     Audio.PlaySoundAtTransform("Wrong", transform);
+                     Audio.PlaySoundAtTransform(Settings.shitassMode ? "badyourbad" : "Wrong", transform);
                      break;
                }
                if (moduleSolved) {
@@ -136,7 +149,7 @@ public class ShitassSays : MonoBehaviour {
                   GetComponent<KMBombModule>().HandleStrike();
                   Pressed = true;
                   StartCoroutine(Flash());
-                  Audio.PlaySoundAtTransform("Wrong", transform);
+                  Audio.PlaySoundAtTransform(Settings.shitassMode ? "badyourbad" : "Wrong", transform);
                }
             }
             else if (Active) {
@@ -178,6 +191,7 @@ public class ShitassSays : MonoBehaviour {
    }
 
    void TestPress () {
+      if (Settings.shitassMode) return;
       Audio.PlaySoundAtTransform("Normal", transform);
       //if (!Played) {
       //Played = true;
@@ -189,7 +203,7 @@ public class ShitassSays : MonoBehaviour {
          Debug.LogFormat("[Simon Smiles #{0}] The face you last pressed had a face.", moduleId);
          switch (Sounds[Iteration]) { //Low
             case 0:
-               Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"Low.\"", moduleId);
+               Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"{1}.\"", moduleId, SoundFiles[0]);
                switch (LastPressedForThisIntThing) {
                   case 0: //r
                      Debug.LogFormat("[Simon Smiles #{0}] Last pressed was red.", moduleId);
@@ -206,7 +220,7 @@ public class ShitassSays : MonoBehaviour {
                }
                break;
             case 1:
-               Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"Normal.\"", moduleId);
+               Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"{1}.\"", moduleId, SoundFiles[1]);
                switch (LastPressedForThisIntThing) {
                   case 0:
                      Debug.LogFormat("[Simon Smiles #{0}] Last pressed was red.", moduleId);
@@ -223,7 +237,7 @@ public class ShitassSays : MonoBehaviour {
                }
                break;
             case 2:
-               Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"High.\"", moduleId);
+               Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"{1}.\"", moduleId, SoundFiles[2]);
                switch (LastPressedForThisIntThing) {
                   case 0:
                      Debug.LogFormat("[Simon Smiles #{0}] Last pressed was red.", moduleId);
@@ -245,7 +259,7 @@ public class ShitassSays : MonoBehaviour {
          Debug.LogFormat("[Simon Smiles #{0}] The face you last pressed had a face.", moduleId);
          switch (Sounds[Iteration]) { //Low
             case 0:
-               Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"Low.\"", moduleId);
+               Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"{1}.\"", moduleId, SoundFiles[0]);
                switch (LastPressedForThisIntThing) {
                   case 0: //r
                      Debug.LogFormat("[Simon Smiles #{0}] Last pressed was red.", moduleId);
@@ -262,7 +276,7 @@ public class ShitassSays : MonoBehaviour {
                }
                break;
             case 1:
-               Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"Normal.\"", moduleId);
+               Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"{1}.\"", moduleId, SoundFiles[1]);
                switch (LastPressedForThisIntThing) {
                   case 0:
                      Debug.LogFormat("[Simon Smiles #{0}] Last pressed was red.", moduleId);
@@ -279,7 +293,7 @@ public class ShitassSays : MonoBehaviour {
                }
                break;
             case 2:
-               Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"High.\"", moduleId);
+               Debug.LogFormat("[Simon Smiles #{0}] The clip played was \"{1}.\"", moduleId, SoundFiles[2]);
                switch (LastPressedForThisIntThing) {
                   case 0:
                      Debug.LogFormat("[Simon Smiles #{0}] Last pressed was red.", moduleId);
@@ -329,6 +343,7 @@ public class ShitassSays : MonoBehaviour {
    }
 
    IEnumerator StageChange () {
+      Transition = true;
       for (int j = 0; j < 10; j++) {
          for (int i = 0; i < 4; i++) {
             ButtonsButObjects[i].GetComponent<MeshRenderer>().material = LightsAndNotLights[i + 4];
@@ -339,6 +354,7 @@ public class ShitassSays : MonoBehaviour {
          }
          yield return new WaitForSeconds(.1f);
       }
+      Transition = false;
    }
 
    IEnumerator KeyAnimation (int HiKavin) {
@@ -359,7 +375,7 @@ public class ShitassSays : MonoBehaviour {
 
    void Strikes () {
       GetComponent<KMBombModule>().HandleStrike();
-      Audio.PlaySoundAtTransform("Wrong", transform);
+      Audio.PlaySoundAtTransform(Settings.shitassMode ? "badyourbad" : "Wrong", transform);
       Presses = String.Empty;
       Iteration = 0;
       Timer = 10f;
@@ -509,12 +525,22 @@ public class ShitassSays : MonoBehaviour {
    }
 
 #pragma warning disable 414
-   private readonly string TwitchHelpMessage = @"Use !{0} R/G/B/Y/red/green/blue/yellow to press that button. Chain by using spaces.";
+   private readonly string TwitchHelpMessage = @"Use !{0} SL/light to press the status light. Use !{0} R/G/B/Y/red/green/blue/yellow to press that button. Chain by using spaces. On TP the time between presses is extended to 17.5 seconds.";
 #pragma warning restore 414
 
    IEnumerator ProcessTwitchCommand (string Command) {
       string[] Parameters = Command.Trim().ToUpper().Split(' ');
       yield return null;
+      if (Command.EqualsIgnoreCase("SL") || Command.EqualsIgnoreCase("LIGHT"))
+      {
+         if (Settings.shitassMode)
+         {
+            yield return "sendtochaterror The status light cannot be pressed in Shitass Mode!";
+            yield break;
+         }
+         Test.OnInteract();
+         yield break;
+      }
       for (int i = 0; i < Parameters.Length; i++) {
          if (Parameters[i] != "R" && Parameters[i] != "Y" && Parameters[i] != "B" && Parameters[i] != "G" && Parameters[i] != "RED" &&
          Parameters[i] != "YELLOW" && Parameters[i] != "BLUE" && Parameters[i] != "GREEN") {
@@ -522,7 +548,7 @@ public class ShitassSays : MonoBehaviour {
             yield break;
          }
       }
-      while (StrikeFlash) {
+      while (StrikeFlash || Transition) {
          yield return null;
       }
       for (int i = 0; i < Parameters.Length; i++) {
@@ -558,12 +584,33 @@ public class ShitassSays : MonoBehaviour {
             yield return new WaitForSeconds(1f);
          }
          Buttons[ColorChooser(OnOrOffOfShitasses[LastPressed], LastPressed)].OnInteract();
-         yield return new WaitForSeconds(1f);
+         if (!StageTwoActive) yield return new WaitForSeconds(1f);
       }
-      yield return new WaitForSeconds(3f);
+      while (Transition) yield return true;
       for (int i = 0; i < 7; i++) {
          Buttons[FinalSequence[i]].OnInteract();
-         yield return new WaitForSeconds(1f);
+         yield return new WaitForSeconds(.1f);
       }
    }
+
+    class SimonSmilesSettings
+    {
+        public bool shitassMode = false;
+    }
+
+    static Dictionary<string, object>[] TweaksEditorSettings = new Dictionary<string, object>[]
+    {
+        new Dictionary<string, object>
+        {
+            { "Filename", "SimonSmilesSettings.json" },
+            { "Name", "Simon Smiles Settings" },
+            { "Listing", new List<Dictionary<string, object>>{
+                new Dictionary<string, object>
+                {
+                    { "Key", "shitassMode" },
+                    { "Text", "Reverts the module back to when it was Shitass Says" }
+                },
+            } }
+        }
+    };
 }
