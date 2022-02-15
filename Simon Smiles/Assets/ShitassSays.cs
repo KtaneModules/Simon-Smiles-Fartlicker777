@@ -17,6 +17,8 @@ public class ShitassSays : MonoBehaviour {
    public GameObject SolvedShitass;
    public KMSelectable Test;
 
+   Coroutine pressFlash;
+   Coroutine strikeFlash;
 
    int[] FinalSequence = new int[10];
    int[] Sounds = new int[9];
@@ -39,7 +41,6 @@ public class ShitassSays : MonoBehaviour {
    bool[] OnOrOffOfShitasses = new bool[4];
    bool Active;
    bool StageTwoActive;
-   bool Pressed;
    bool Playing;
    //bool Played;
    bool StrikeFlash;
@@ -109,9 +110,18 @@ public class ShitassSays : MonoBehaviour {
       if (StrikeFlash || Transition) {
          return;
       }
-      StopAllCoroutines();
-      for (int i = 0; i < 4; i++) {
-         ButtonsButObjects[i].GetComponent<MeshRenderer>().material = LightsAndNotLights[i];
+      if (pressFlash != null)
+      {
+         StopCoroutine(pressFlash);
+         for (int i = 0; i < 4; i++)
+         {
+            ButtonsButObjects[i].GetComponent<MeshRenderer>().material = LightsAndNotLights[i];
+         }
+      }
+      if (strikeFlash != null)
+      {
+         StopCoroutine(strikeFlash);
+         strikeFlash = null;
       }
       for (int i = 0; i < 4; i++) {
          if (Button == Buttons[i]) {
@@ -135,7 +145,6 @@ public class ShitassSays : MonoBehaviour {
                   return;
                }
             }
-            Pressed = false;
             if (StageTwoActive) {
                if (i == FinalSequence[StageTwoPresses]) {
                   StageTwoPresses++;
@@ -147,8 +156,7 @@ public class ShitassSays : MonoBehaviour {
                else {
                   Debug.LogFormat("[Simon Smiles #{0}] You pressed {1}. Next up is {2}.", moduleId, new string[] { "R", "B", "G", "Y" }[i], new string[] { "R", "B", "G", "Y" }[FinalSequence[StageTwoPresses]]);
                   GetComponent<KMBombModule>().HandleStrike();
-                  Pressed = true;
-                  StartCoroutine(Flash());
+                  strikeFlash = StartCoroutine(Flash());
                   Audio.PlaySoundAtTransform(Settings.shitassMode ? "badyourbad" : "Wrong", transform);
                }
             }
@@ -340,6 +348,7 @@ public class ShitassSays : MonoBehaviour {
       ButtonsButObjects[i].GetComponent<MeshRenderer>().material = LightsAndNotLights[i + 4];
       yield return new WaitForSeconds(1f);
       ButtonsButObjects[i].GetComponent<MeshRenderer>().material = LightsAndNotLights[i];
+      pressFlash = null;
    }
 
    IEnumerator StageChange () {
@@ -359,7 +368,7 @@ public class ShitassSays : MonoBehaviour {
 
    IEnumerator KeyAnimation (int HiKavin) {
       AnimatingFlag[HiKavin] = true;
-      StartCoroutine(ColorChanger(HiKavin));
+      pressFlash = StartCoroutine(ColorChanger(HiKavin));
       Buttons[HiKavin].AddInteractionPunch(0.125f);
       Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, transform);
       for (int i = 0; i < 5; i++) {
@@ -392,13 +401,7 @@ public class ShitassSays : MonoBehaviour {
          for (int i = 0; i < 10; i++) {
             StartCoroutine(ColorChanger(int.Parse(Presses[i].ToString())));
             StartCoroutine(KeyAnimation(int.Parse(Presses[i].ToString())));
-            if (!Pressed) {
-               yield break;
-            }
             yield return new WaitForSeconds(1f);
-         }
-         if (!Pressed) {
-            yield break;
          }
          StrikeFlash = false;
          yield return new WaitForSeconds(2.5f);
@@ -586,7 +589,7 @@ public class ShitassSays : MonoBehaviour {
          Buttons[ColorChooser(OnOrOffOfShitasses[LastPressed], LastPressed)].OnInteract();
          if (!StageTwoActive) yield return new WaitForSeconds(1f);
       }
-      while (Transition) yield return true;
+      while (Transition || StrikeFlash) yield return true;
       for (int i = 0; i < 7; i++) {
          Buttons[FinalSequence[i]].OnInteract();
          yield return new WaitForSeconds(.1f);
